@@ -197,7 +197,6 @@ CALCULATE(
 
 ---
 
----
 
 ## 🚦 Resumen de KPIs implementados en SSAS Tabular
 
