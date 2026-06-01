@@ -197,38 +197,193 @@ CALCULATE(
 
 ---
 
-## 🚦 KPIs implementados
+---
 
-El modelo tabular incluye KPIs para evaluar el desempeño comercial.
+## 🚦 Resumen de KPIs implementados en SSAS Tabular
 
-| KPI | Objetivo |
+Esta sección documenta los KPIs principales implementados en el modelo **SSAS Tabular** del proyecto BI. Los KPIs permiten evaluar visualmente el desempeño de ventas, crecimiento y rentabilidad mediante medidas DAX, objetivos empresariales y estados tipo semáforo.
+
+---
+
+### 1. KPI: `Sales YOY Growth %`
+
+| Elemento | Descripción |
 |---|---|
-| `Total Orders` | Seguimiento de volumen de órdenes |
-| `Margin %` | Control de rentabilidad |
-| `Total Sales YTD` | Seguimiento acumulado anual |
-| `Sales YOY Growth %` | Crecimiento interanual |
-| `Total Sales Rolling 3 Months` | Tendencia móvil trimestral |
+| **Nombre del KPI** | `Sales YOY Growth %` |
+| **Tabla** | `fact_sales` |
+| **Medida base** | `Sales YOY Growth %` |
+| **Formato** | Porcentaje `%`, con 2 decimales |
+| **Tipo de objetivo** | Absolute Value |
+| **Valor objetivo** | `150%` o `1.50` |
+| **Resultado obtenido** | `175.90%` |
+| **Indicador visual** | Shapes / Semáforo estándar |
 
-### Ejemplo de meta KPI
+#### Objetivo empresarial
+
+Medir el crecimiento porcentual de ventas respecto al año anterior. Este KPI permite evaluar si las ventas están creciendo o disminuyendo en comparación con el periodo anterior.
+
+#### Fórmula DAX
+
+```DAX
+Sales YOY Growth % :=
+DIVIDE(
+    [Total Sales] - [Total Sales LY],
+    [Total Sales LY],
+    0
+)
+```
+
+#### Configuración del KPI
+
+```text
+Valor base: Sales YOY Growth %
+Objetivo esperado: 150% / 1.50
+Tipo de objetivo: Absolute Value
+Formato: Porcentaje (%)
+Decimales: 2
+```
+
+#### Rangos del indicador visual
+
+| Estado | Condición | Interpretación |
+|---|---:|---|
+| 🟢 Verde | `>= 150%` | Crecimiento anual sobresaliente |
+| 🟡 Amarillo | `50% a 149%` | Crecimiento moderado |
+| 🔴 Rojo | `< 50%` | Crecimiento bajo o disminución |
+
+#### Interpretación del resultado
+
+El resultado obtenido fue aproximadamente **175.90%**, lo que indica que las ventas crecieron de forma significativa respecto al año anterior. Este resultado supera el objetivo esperado de **150%**, por lo que el KPI se interpreta como un desempeño comercial elevado.
+
+---
+
+### 2. KPI: `Margin %`
+
+| Elemento | Descripción |
+|---|---|
+| **Nombre del KPI** | `Margin %` |
+| **Tabla** | `fact_sales` |
+| **Medida base** | `Margin %` |
+| **Formato** | Porcentaje `%`, con 2 decimales |
+| **Tipo de objetivo** | Absolute Value |
+| **Valor objetivo** | `50%` o `0.50` |
+| **Resultado obtenido** | `51.88%` |
+| **Indicador visual** | Shapes / Semáforo estándar |
+
+#### Objetivo empresarial
+
+Medir el porcentaje de rentabilidad obtenido sobre las ventas. Este KPI permite identificar qué proporción de las ventas representa margen o ganancia sobre el total vendido.
+
+#### Fórmula DAX
+
+```DAX
+Margin % :=
+DIVIDE(
+    [Total Gross Margin],
+    [Total Sales],
+    0
+)
+```
+
+#### Configuración del KPI
+
+```text
+Valor base: Margin %
+Objetivo esperado: 50% / 0.50
+Tipo de objetivo: Absolute Value
+Formato: Porcentaje (%)
+Decimales: 2
+```
+
+#### Rangos del indicador visual
+
+| Estado | Condición | Interpretación |
+|---|---:|---|
+| 🟢 Verde | `>= 50%` | Rentabilidad positiva y dentro del objetivo |
+| 🟡 Amarillo | `40% a 49%` | Rentabilidad aceptable, pero debajo del objetivo |
+| 🔴 Rojo | `< 40%` | Rentabilidad baja |
+
+#### Interpretación del resultado
+
+El resultado obtenido fue aproximadamente **51.88%**, lo que indica que la empresa obtiene un margen positivo sobre sus ventas totales. Al superar el objetivo esperado de **50%**, el KPI se interpreta como un resultado favorable de rentabilidad.
+
+---
+
+## ⚙️ Configuración general de KPIs en SSAS Tabular
+
+| Elemento | Configuración |
+|---|---|
+| **Herramienta** | SQL Server Analysis Services Tabular |
+| **Motor** | VertiPaq In-Memory Engine |
+| **Lenguaje de cálculo** | DAX, Data Analysis Expressions |
+| **Tabla principal** | `fact_sales` |
+| **Visualización** | Power BI Desktop / Power BI Service |
+| **Tipo de indicador** | Shapes / Semáforo estándar |
+
+### Propósito de los KPIs
+
+- Monitorear el desempeño empresarial.
+- Evaluar crecimiento comercial anual.
+- Analizar rentabilidad sobre ventas.
+- Identificar desviaciones frente a objetivos definidos.
+- Apoyar la toma de decisiones estratégicas.
+- Integrar indicadores visuales dentro de Power BI.
+
+### Beneficios de los KPIs en el modelo OLAP
+
+- Permiten monitorear rápidamente el estado de los indicadores clave.
+- Facilitan el análisis visual en reportes y dashboards de Power BI.
+- Se integran directamente en el modelo SSAS Tabular.
+- Utilizan procesamiento analítico en memoria mediante VertiPaq.
+- Mejoran la toma de decisiones mediante objetivos cuantificables.
+- Permiten análisis históricos y comparativos mediante DAX.
+- Ayudan a evaluar ventas, margen y crecimiento con semáforos visuales.
+
+---
+
+## 🧮 Medidas auxiliares recomendadas para KPIs
+
+Además de las medidas base, se pueden crear medidas auxiliares para objetivos y estados. Estas medidas facilitan la validación de los KPIs desde DAX Studio, SSMS o Power BI.
+
+### Meta de crecimiento anual
 
 ```DAX
 Sales YOY Growth Target :=
-0.05
+1.50
 ```
 
-### Ejemplo de estado KPI
+### Estado de crecimiento anual
 
 ```DAX
 Sales YOY Growth Status :=
 SWITCH(
     TRUE(),
-    [Sales YOY Growth %] >= 0.05, 1,
-    [Sales YOY Growth %] >= 0, 0,
+    [Sales YOY Growth %] >= 1.50, 1,
+    [Sales YOY Growth %] >= 0.50, 0,
     -1
 )
 ```
 
-Interpretación:
+### Meta de margen
+
+```DAX
+Margin Target :=
+0.50
+```
+
+### Estado de margen
+
+```DAX
+Margin Status :=
+SWITCH(
+    TRUE(),
+    [Margin %] >= 0.50, 1,
+    [Margin %] >= 0.40, 0,
+    -1
+)
+```
+
+Interpretación de estados:
 
 ```text
  1 = Verde
@@ -237,6 +392,42 @@ Interpretación:
 ```
 
 ---
+
+## 🔎 Consulta DAX para validar KPIs
+
+La siguiente consulta permite validar los valores, objetivos y estados de los KPIs desde **DAX Studio** o una consulta DAX en SSMS.
+
+```DAX
+EVALUATE
+ROW(
+    "Sales YOY Growth %", [Sales YOY Growth %],
+    "Sales YOY Growth Target", [Sales YOY Growth Target],
+    "Sales YOY Growth Status", [Sales YOY Growth Status],
+
+    "Margin %", [Margin %],
+    "Margin Target", [Margin Target],
+    "Margin Status", [Margin Status]
+)
+```
+
+También puede consultarse por año:
+
+```DAX
+EVALUATE
+SUMMARIZECOLUMNS(
+    dim_date[year_number],
+
+    "Sales YOY Growth %", [Sales YOY Growth %],
+    "Sales YOY Growth Target", [Sales YOY Growth Target],
+    "Sales YOY Growth Status", [Sales YOY Growth Status],
+
+    "Margin %", [Margin %],
+    "Margin Target", [Margin Target],
+    "Margin Status", [Margin Status]
+)
+ORDER BY
+    dim_date[year_number]
+```
 
 ## 🧪 Metodología de evaluación de rendimiento
 
