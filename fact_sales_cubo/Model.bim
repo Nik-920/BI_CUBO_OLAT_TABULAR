@@ -1,0 +1,971 @@
+{
+  "name": "SemanticModel",
+  "compatibilityLevel": 1700,
+  "model": {
+    "culture": "es-ES",
+    "dataSources": [
+      {
+        "type": "structured",
+        "name": "SQL/NIK-RAMIREZ-BAU;db_dwh_thelook",
+        "connectionDetails": {
+          "protocol": "tds",
+          "address": {
+            "server": "NIK-RAMIREZ-BAU",
+            "database": "db_dwh_thelook"
+          },
+          "authentication": null,
+          "query": null
+        },
+        "credential": {
+          "AuthenticationKind": "ServiceAccount",
+          "kind": "SQL",
+          "path": "nik-ramirez-bau;db_dwh_thelook",
+          "EncryptConnection": false
+        }
+      }
+    ],
+    "tables": [
+      {
+        "name": "fact_sales",
+        "columns": [
+          {
+            "name": "sales_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "sales_key"
+          },
+          {
+            "name": "order_item_id",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_item_id"
+          },
+          {
+            "name": "order_id",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_id"
+          },
+          {
+            "name": "inventory_item_id",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "inventory_item_id"
+          },
+          {
+            "name": "user_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "user_key"
+          },
+          {
+            "name": "product_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "product_key"
+          },
+          {
+            "name": "order_status_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_status_key"
+          },
+          {
+            "name": "order_item_status_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_item_status_key"
+          },
+          {
+            "name": "order_created_date_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_created_date_key"
+          },
+          {
+            "name": "shipped_date_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "shipped_date_key"
+          },
+          {
+            "name": "delivered_date_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "delivered_date_key"
+          },
+          {
+            "name": "returned_date_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "returned_date_key"
+          },
+          {
+            "name": "quantity",
+            "dataType": "int64",
+            "sourceColumn": "quantity"
+          },
+          {
+            "name": "sale_price",
+            "dataType": "double",
+            "sourceColumn": "sale_price"
+          },
+          {
+            "name": "product_cost",
+            "dataType": "double",
+            "sourceColumn": "product_cost"
+          },
+          {
+            "name": "retail_price",
+            "dataType": "double",
+            "sourceColumn": "retail_price"
+          },
+          {
+            "name": "gross_margin",
+            "dataType": "double",
+            "sourceColumn": "gross_margin"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/NIK-RAMIREZ-BAU;db_dwh_thelook\",",
+                "    dbo_fact_sales = Source{[Schema=\"dbo\",Item=\"fact_sales\"]}[Data]",
+                "in",
+                "    dbo_fact_sales"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Sales",
+            "expression": [
+              "",
+              "SUM(fact_sales[sale_price])"
+            ],
+            "formatString": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"3082\" DisplayName=\"€ Español (España)\" Symbol=\"€\" PositivePattern=\"3\" NegativePattern=\"8\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Total Gross Margin",
+            "expression": [
+              "",
+              "SUM(fact_sales[gross_margin])"
+            ],
+            "formatString": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"3082\" DisplayName=\"€ Español (España)\" Symbol=\"€\" PositivePattern=\"3\" NegativePattern=\"8\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Total Orders",
+            "expression": [
+              "",
+              "DISTINCTCOUNT(fact_sales[order_id])"
+            ],
+            "formatString": "0",
+            "kpi": {
+              "targetExpression": "120000",
+              "targetFormatString": "0",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='fact_sales'[Total Orders] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<90000,-1,",
+                "\t                If(x<120000,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "90000"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "120000"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Margin %",
+            "expression": [
+              "",
+              "DIVIDE(",
+              "    [Total Gross Margin],",
+              "    [Total Sales],",
+              "    0",
+              ")"
+            ],
+            "formatString": "0.00 %;-0.00 %;0.00 %",
+            "kpi": {
+              "targetExpression": "50",
+              "targetFormatString": "0.00 %;-0.00 %;0.00 %",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='fact_sales'[Margin %] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<35,-1,",
+                "\t                If(x<50,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "35"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Total Quantity",
+            "expression": [
+              "",
+              "SUM(fact_sales[quantity])"
+            ],
+            "formatString": "0"
+          },
+          {
+            "name": "Total Sales YTD",
+            "expression": [
+              "",
+              "TOTALYTD(",
+              "    [Total Sales],",
+              "    dim_date[full_date]",
+              ")"
+            ],
+            "formatString": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+            "kpi": {
+              "targetExpression": "10000000",
+              "targetFormatString": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='fact_sales'[Total Sales YTD] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<7000000,-1,",
+                "\t                If(x<10000000,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "7000000"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "10000000"
+                }
+              ]
+            },
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"3082\" DisplayName=\"€ Español (España)\" Symbol=\"€\" PositivePattern=\"3\" NegativePattern=\"8\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Total Sales LY",
+            "expression": [
+              "",
+              "CALCULATE(",
+              "    [Total Sales],",
+              "    SAMEPERIODLASTYEAR(dim_date[full_date])",
+              ")"
+            ],
+            "formatString": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"3082\" DisplayName=\"€ Español (España)\" Symbol=\"€\" PositivePattern=\"3\" NegativePattern=\"8\" /></Format>"
+              }
+            ]
+          },
+          {
+            "name": "Sales YOY Growth %",
+            "expression": [
+              "",
+              "DIVIDE(",
+              "    [Total Sales] - [Total Sales LY],",
+              "    [Total Sales LY],",
+              "    0",
+              ")"
+            ],
+            "formatString": "0.00 %;-0.00 %;0.00 %",
+            "kpi": {
+              "targetExpression": "150",
+              "targetFormatString": "0.00 %;-0.00 %;0.00 %",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='fact_sales'[Sales YOY Growth %] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<100,-1,",
+                "\t                If(x<150,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "100"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "150"
+                }
+              ]
+            }
+          },
+          {
+            "name": "Total Sales Rolling 3 Months",
+            "expression": [
+              "",
+              "CALCULATE(",
+              "    [Total Sales],",
+              "    DATESINPERIOD(",
+              "        dim_date[full_date],",
+              "        MAX(dim_date[full_date]),",
+              "        -3,",
+              "        MONTH",
+              "    )",
+              ")"
+            ],
+            "formatString": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+            "kpi": {
+              "targetExpression": "2000000",
+              "targetFormatString": "#,0.00 \"€\";-#,0.00 \"€\";#,0.00 \"€\"",
+              "statusGraphic": "Traffic Light - Single",
+              "statusExpression": [
+                "var x='fact_sales'[Total Sales Rolling 3 Months] return",
+                "            if(ISBLANK(x),BLANK(),",
+                "                    If(x<1500000,-1,",
+                "\t                If(x<2000000,0,1)",
+                "                )",
+                "            )",
+                "            "
+              ],
+              "annotations": [
+                {
+                  "name": "GoalType",
+                  "value": "StaticValue"
+                },
+                {
+                  "name": "KpiStatusType",
+                  "value": "Linear"
+                },
+                {
+                  "name": "KpiThresholdType",
+                  "value": "Absolute"
+                },
+                {
+                  "name": "KpiThresholdOrdering",
+                  "value": "Ascending"
+                },
+                {
+                  "name": "KpiThresholdCount",
+                  "value": "2"
+                },
+                {
+                  "name": "KpiThreshold_0",
+                  "value": "1500000"
+                },
+                {
+                  "name": "KpiThreshold_1",
+                  "value": "2000000"
+                }
+              ]
+            },
+            "annotations": [
+              {
+                "name": "Format",
+                "value": "<Format Format=\"Currency\" Accuracy=\"2\"><Currency LCID=\"3082\" DisplayName=\"€ Español (España)\" Symbol=\"€\" PositivePattern=\"3\" NegativePattern=\"8\" /></Format>"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "dim_product",
+        "columns": [
+          {
+            "name": "product_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "product_key"
+          },
+          {
+            "name": "product_id",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "product_id"
+          },
+          {
+            "name": "product_name",
+            "dataType": "string",
+            "sourceColumn": "product_name"
+          },
+          {
+            "name": "sku",
+            "dataType": "string",
+            "sourceColumn": "sku"
+          },
+          {
+            "name": "category_id",
+            "dataType": "string",
+            "isHidden": true,
+            "sourceColumn": "category_id"
+          },
+          {
+            "name": "category_name",
+            "dataType": "string",
+            "sourceColumn": "category_name"
+          },
+          {
+            "name": "brand_id",
+            "dataType": "string",
+            "sourceColumn": "brand_id"
+          },
+          {
+            "name": "brand_name",
+            "dataType": "string",
+            "sourceColumn": "brand_name"
+          },
+          {
+            "name": "department_id",
+            "dataType": "string",
+            "sourceColumn": "department_id"
+          },
+          {
+            "name": "department_name",
+            "dataType": "string",
+            "sourceColumn": "department_name"
+          },
+          {
+            "name": "product_cost",
+            "dataType": "double",
+            "sourceColumn": "product_cost"
+          },
+          {
+            "name": "retail_price",
+            "dataType": "double",
+            "sourceColumn": "retail_price"
+          },
+          {
+            "name": "distribution_center_id",
+            "dataType": "int64",
+            "sourceColumn": "distribution_center_id"
+          },
+          {
+            "name": "distribution_center_name",
+            "dataType": "string",
+            "sourceColumn": "distribution_center_name"
+          },
+          {
+            "name": "distribution_center_latitude",
+            "dataType": "double",
+            "sourceColumn": "distribution_center_latitude"
+          },
+          {
+            "name": "distribution_center_longitude",
+            "dataType": "double",
+            "sourceColumn": "distribution_center_longitude"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/NIK-RAMIREZ-BAU;db_dwh_thelook\",",
+                "    dbo_dim_product = Source{[Schema=\"dbo\",Item=\"dim_product\"]}[Data]",
+                "in",
+                "    dbo_dim_product"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_user",
+        "columns": [
+          {
+            "name": "user_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "user_key"
+          },
+          {
+            "name": "user_id",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "user_id"
+          },
+          {
+            "name": "first_name",
+            "dataType": "string",
+            "sourceColumn": "first_name"
+          },
+          {
+            "name": "last_name",
+            "dataType": "string",
+            "sourceColumn": "last_name"
+          },
+          {
+            "name": "email",
+            "dataType": "string",
+            "sourceColumn": "email"
+          },
+          {
+            "name": "age",
+            "dataType": "int64",
+            "sourceColumn": "age"
+          },
+          {
+            "name": "gender_id",
+            "dataType": "int64",
+            "sourceColumn": "gender_id"
+          },
+          {
+            "name": "gender_name",
+            "dataType": "string",
+            "sourceColumn": "gender_name"
+          },
+          {
+            "name": "traffic_source_id",
+            "dataType": "int64",
+            "sourceColumn": "traffic_source_id"
+          },
+          {
+            "name": "traffic_source_name",
+            "dataType": "string",
+            "sourceColumn": "traffic_source_name"
+          },
+          {
+            "name": "street_address",
+            "dataType": "string",
+            "sourceColumn": "street_address"
+          },
+          {
+            "name": "postal_code",
+            "dataType": "string",
+            "sourceColumn": "postal_code"
+          },
+          {
+            "name": "city_id",
+            "dataType": "int64",
+            "sourceColumn": "city_id"
+          },
+          {
+            "name": "city_name",
+            "dataType": "string",
+            "sourceColumn": "city_name"
+          },
+          {
+            "name": "state_id",
+            "dataType": "int64",
+            "sourceColumn": "state_id"
+          },
+          {
+            "name": "state_name",
+            "dataType": "string",
+            "sourceColumn": "state_name"
+          },
+          {
+            "name": "country_id",
+            "dataType": "int64",
+            "sourceColumn": "country_id"
+          },
+          {
+            "name": "country_name",
+            "dataType": "string",
+            "sourceColumn": "country_name"
+          },
+          {
+            "name": "latitude",
+            "dataType": "double",
+            "sourceColumn": "latitude"
+          },
+          {
+            "name": "longitude",
+            "dataType": "double",
+            "sourceColumn": "longitude"
+          },
+          {
+            "name": "user_created_at",
+            "dataType": "dateTime",
+            "sourceColumn": "user_created_at"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/NIK-RAMIREZ-BAU;db_dwh_thelook\",",
+                "    dbo_dim_user = Source{[Schema=\"dbo\",Item=\"dim_user\"]}[Data]",
+                "in",
+                "    dbo_dim_user"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_date",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "date_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "date_key"
+          },
+          {
+            "name": "full_date",
+            "dataType": "dateTime",
+            "isKey": true,
+            "sourceColumn": "full_date"
+          },
+          {
+            "name": "day_number",
+            "dataType": "int64",
+            "sourceColumn": "day_number"
+          },
+          {
+            "name": "day_name",
+            "dataType": "string",
+            "sourceColumn": "day_name"
+          },
+          {
+            "name": "week_number",
+            "dataType": "int64",
+            "sourceColumn": "week_number"
+          },
+          {
+            "name": "month_number",
+            "dataType": "int64",
+            "sourceColumn": "month_number"
+          },
+          {
+            "name": "month_name",
+            "dataType": "string",
+            "sourceColumn": "month_name"
+          },
+          {
+            "name": "quarter_number",
+            "dataType": "int64",
+            "sourceColumn": "quarter_number"
+          },
+          {
+            "name": "year_number",
+            "dataType": "int64",
+            "sourceColumn": "year_number"
+          },
+          {
+            "name": "is_weekend",
+            "dataType": "boolean",
+            "sourceColumn": "is_weekend"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/NIK-RAMIREZ-BAU;db_dwh_thelook\",",
+                "    dbo_dim_date = Source{[Schema=\"dbo\",Item=\"dim_date\"]}[Data]",
+                "in",
+                "    dbo_dim_date"
+              ]
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Jerarquia Tiempo",
+            "levels": [
+              {
+                "name": "year_number",
+                "ordinal": 0,
+                "column": "year_number"
+              },
+              {
+                "name": "quarter_number",
+                "ordinal": 1,
+                "column": "quarter_number"
+              },
+              {
+                "name": "month_name",
+                "ordinal": 2,
+                "column": "month_name"
+              },
+              {
+                "name": "day_number",
+                "ordinal": 3,
+                "column": "day_number"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "dim_order_status",
+        "columns": [
+          {
+            "name": "order_status_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_status_key"
+          },
+          {
+            "name": "order_status_id",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_status_id"
+          },
+          {
+            "name": "order_status_name",
+            "dataType": "string",
+            "sourceColumn": "order_status_name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/NIK-RAMIREZ-BAU;db_dwh_thelook\",",
+                "    dbo_dim_order_status = Source{[Schema=\"dbo\",Item=\"dim_order_status\"]}[Data]",
+                "in",
+                "    dbo_dim_order_status"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_order_item_status",
+        "columns": [
+          {
+            "name": "order_item_status_key",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_item_status_key"
+          },
+          {
+            "name": "order_item_status_id",
+            "dataType": "int64",
+            "isHidden": true,
+            "sourceColumn": "order_item_status_id"
+          },
+          {
+            "name": "order_item_status_name",
+            "dataType": "string",
+            "sourceColumn": "order_item_status_name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "dataView": "full",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #\"SQL/NIK-RAMIREZ-BAU;db_dwh_thelook\",",
+                "    dbo_dim_order_item_status = Source{[Schema=\"dbo\",Item=\"dim_order_item_status\"]}[Data]",
+                "in",
+                "    dbo_dim_order_item_status"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "b29643d1-6b6d-4883-a164-d8752c570e5e",
+        "fromTable": "fact_sales",
+        "fromColumn": "delivered_date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key",
+        "isActive": false
+      },
+      {
+        "name": "fd56e936-57e6-442f-9e5e-53822332c4a6",
+        "fromTable": "fact_sales",
+        "fromColumn": "returned_date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key",
+        "isActive": false
+      },
+      {
+        "name": "8b7d6a8f-9c32-44e5-9a95-1fe2eddba82d",
+        "fromTable": "fact_sales",
+        "fromColumn": "shipped_date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key",
+        "isActive": false
+      },
+      {
+        "name": "779efe34-447a-4cb1-b347-2461f956c032",
+        "fromTable": "fact_sales",
+        "fromColumn": "order_created_date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key"
+      },
+      {
+        "name": "ddc31e2f-5f8a-48fd-bf31-d505c88f7d7c",
+        "fromTable": "fact_sales",
+        "fromColumn": "order_item_status_key",
+        "toTable": "dim_order_item_status",
+        "toColumn": "order_item_status_key"
+      },
+      {
+        "name": "d8033101-a586-48c6-a1f9-5d2a9d7281de",
+        "fromTable": "fact_sales",
+        "fromColumn": "order_status_key",
+        "toTable": "dim_order_status",
+        "toColumn": "order_status_key"
+      },
+      {
+        "name": "5ea9bf1e-566f-4626-9e58-908faed665d3",
+        "fromTable": "fact_sales",
+        "fromColumn": "product_key",
+        "toTable": "dim_product",
+        "toColumn": "product_key"
+      },
+      {
+        "name": "7ea492d9-5988-488e-b8a3-b0b43f0564ca",
+        "fromTable": "fact_sales",
+        "fromColumn": "user_key",
+        "toTable": "dim_user",
+        "toColumn": "user_key"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "ClientCompatibilityLevel",
+        "value": "800"
+      }
+    ]
+  },
+  "id": "SemanticModel"
+}
