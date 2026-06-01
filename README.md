@@ -1,29 +1,44 @@
-# BI_CUBO_OLAP_TABULAR
+# 🚀 BI_CUBO_OLAP_TABULAR
 
-Proyecto de **Inteligencia de Negocios** basado en el dataset **TheLook Ecommerce**, implementado con **SQL Server**, **Data Warehouse dimensional**, **SSAS Tabular**, **DAX avanzado**, **DAX Studio** y **Power BI**.
+<p align="center">
+  <img src="https://img.shields.io/badge/SQL%20Server-2025-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=white" />
+  <img src="https://img.shields.io/badge/SSAS-Tabular-2E4E8A?style=for-the-badge&logo=microsoft&logoColor=white" />
+  <img src="https://img.shields.io/badge/DAX-Studio-1A6B1A?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Power%20BI-Service-F2C811?style=for-the-badge&logo=powerbi&logoColor=black" />
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
+</p>
 
-El objetivo del proyecto es construir un flujo BI completo: desde una base transaccional normalizada, pasando por un modelo dimensional tipo constelación, hasta un modelo tabular OLAP con medidas DAX, KPIs y pruebas comparativas de rendimiento.
-
----
-
-## 📌 Descripción del proyecto
-
-Este repositorio contiene el desarrollo de un modelo BI para analizar información de ventas del e-commerce **TheLook**.
-
-El proyecto incluye:
-
-- Base de datos transaccional en SQL Server.
-- Modelo DWH dimensional tipo constelación.
-- Proceso ETL desde la base transaccional hacia el DWH.
-- Modelo SSAS Tabular desplegado en Analysis Services.
-- Medidas DAX avanzadas.
-- KPIs de negocio.
-- Consultas SQL y DAX para comparar rendimiento.
-- Conexión con Power BI Desktop y Power BI Service mediante On-premises Data Gateway.
+<p align="center">
+  <b>Modelo BI completo para TheLook Ecommerce</b><br>
+  SQL Server DWH · SSAS Tabular · DAX avanzado · KPIs · DAX Studio · Power BI Service
+</p>
 
 ---
 
-## 🧱 Arquitectura BI
+## 📌 Resumen ejecutivo
+
+Este repositorio contiene una solución de **Inteligencia de Negocios** construida sobre el dataset **TheLook Ecommerce**. El proyecto integra una base transaccional normalizada, un **Data Warehouse dimensional tipo constelación**, un modelo **SSAS Tabular**, medidas **DAX avanzadas**, KPIs de negocio, análisis de rendimiento con **DAX Studio** y publicación en **Power BI Service** mediante **On-premises Data Gateway**.
+
+El propósito principal es comparar el rendimiento entre:
+
+- Consultas analíticas directas al **DWH en SQL Server**.
+- Consultas equivalentes ejecutadas sobre el **modelo SSAS Tabular** con DAX.
+
+---
+
+## 🧱 Arquitectura del proyecto
+
+```mermaid
+flowchart TD
+    A[CSV / Dataset TheLook Ecommerce] --> B[Base Transaccional SQL Server]
+    B --> C[Data Warehouse Dimensional]
+    C --> D[SSAS Tabular Model]
+    D --> E[DAX Studio]
+    D --> F[Power BI Desktop]
+    F --> G[Power BI Service]
+    H[On-premises Data Gateway] --> G
+    D --> H
+```
 
 ```text
 CSV / Dataset TheLook Ecommerce
@@ -43,61 +58,21 @@ Power BI Service
 
 ## 🗃️ Bases de datos utilizadas
 
-### Base transaccional
-
-```sql
-db_transc_thelook
-```
-
-Contiene las tablas normalizadas desde los archivos CSV originales.
-
-Tablas principales:
-
-```text
-distribution_centers
-products
-inventory_items
-users
-user_addresses
-orders
-order_items
-sessions
-events
-```
-
-Tablas catálogo:
-
-```text
-product_categories
-product_brands
-product_departments
-genders
-countries
-states
-cities
-traffic_sources
-order_statuses
-order_item_statuses
-browsers
-event_types
-event_locations
-```
+| Componente | Nombre |
+|---|---|
+| Base transaccional | `db_transc_thelook` |
+| Data Warehouse | `db_dwh_thelook` |
+| Modelo Tabular | `fact_sales_cubo` |
+| Servidor SSAS Tabular | `NIK-RAMIREZ-BAU\TABULAR` |
+| Gateway | `Gateway_NIK_RAMIREZ` |
 
 ---
 
-### Base DWH dimensional
+## 🧩 Modelo dimensional
 
-```sql
-db_dwh_thelook
-```
+El DWH fue diseñado como una **constelación de hechos**, con varias tablas fact que comparten dimensiones.
 
-Modelo dimensional tipo **constelación de hechos**, compuesto por varias tablas fact y dimensiones compartidas.
-
----
-
-## ⭐ Modelo dimensional
-
-### Tablas de hechos
+### ⭐ Tablas de hechos
 
 ```text
 fact_sales
@@ -106,7 +81,7 @@ fact_inventory
 fact_events
 ```
 
-### Dimensiones
+### 📐 Dimensiones
 
 ```text
 dim_date
@@ -123,23 +98,16 @@ dim_session
 
 ---
 
-## 🧩 Modelo Tabular SSAS
+## 🧠 Modelo SSAS Tabular
 
-El modelo tabular fue implementado en una instancia local de **SQL Server Analysis Services Tabular**.
-
-Servidor utilizado:
+El modelo tabular principal se desplegó en una instancia local de **SQL Server Analysis Services Tabular**.
 
 ```text
-NIK-RAMIREZ-BAU\TABULAR
+Servidor: NIK-RAMIREZ-BAU\TABULAR
+Base tabular: fact_sales_cubo
 ```
 
-Base tabular desplegada:
-
-```text
-fact_sales_cubo
-```
-
-Tablas cargadas en el modelo tabular de ventas:
+Tablas principales cargadas en el modelo tabular de ventas:
 
 ```text
 fact_sales
@@ -187,7 +155,7 @@ DIVIDE(
 
 ---
 
-## ⏱️ Medidas DAX de inteligencia de tiempo
+## ⏱️ DAX de inteligencia de tiempo
 
 ```DAX
 Total Sales LY :=
@@ -231,26 +199,24 @@ CALCULATE(
 
 ## 🚦 KPIs implementados
 
-El modelo tabular incluye KPIs para evaluar el desempeño del negocio.
+El modelo tabular incluye KPIs para evaluar el desempeño comercial.
 
-KPIs principales:
+| KPI | Objetivo |
+|---|---|
+| `Total Orders` | Seguimiento de volumen de órdenes |
+| `Margin %` | Control de rentabilidad |
+| `Total Sales YTD` | Seguimiento acumulado anual |
+| `Sales YOY Growth %` | Crecimiento interanual |
+| `Total Sales Rolling 3 Months` | Tendencia móvil trimestral |
 
-```text
-Total Orders
-Margin %
-Total Sales YTD
-Sales YOY Growth %
-Total Sales Rolling 3 Months
-```
-
-Ejemplo de meta para crecimiento anual:
+### Ejemplo de meta KPI
 
 ```DAX
 Sales YOY Growth Target :=
 0.05
 ```
 
-Ejemplo de estado KPI:
+### Ejemplo de estado KPI
 
 ```DAX
 Sales YOY Growth Status :=
@@ -265,18 +231,117 @@ SWITCH(
 Interpretación:
 
 ```text
-1  = Verde
-0  = Amarillo
+ 1 = Verde
+ 0 = Amarillo
 -1 = Rojo
 ```
 
 ---
 
-## 🧪 Comparación de rendimiento
+## 🧪 Metodología de evaluación de rendimiento
 
-Se realizaron pruebas comparando consultas directas al DWH en SQL Server contra consultas equivalentes en SSAS Tabular usando DAX Studio.
+Para la comparación de rendimiento se ejecutaron **12 consultas equivalentes** en dos plataformas:
 
-### Consulta SQL directa al DWH
+### SQL Server DWH
+
+Se usaron consultas T-SQL sobre `db_dwh_thelook` con:
+
+```sql
+SET STATISTICS TIME ON;
+SET STATISTICS IO ON;
+```
+
+Métricas capturadas:
+
+| Métrica | Descripción |
+|---|---|
+| CPU time | Tiempo de procesador consumido |
+| Elapsed time | Tiempo total transcurrido |
+| Logical reads | Páginas leídas desde memoria |
+
+### SSAS Tabular / DAX Studio
+
+Se ejecutaron consultas DAX sobre `fact_sales_cubo`, con:
+
+```text
+Server Timings = ON
+Query Plan = ON
+```
+
+Métricas capturadas:
+
+| Métrica | Descripción |
+|---|---|
+| Total | Tiempo total de consulta DAX |
+| FE | Formula Engine |
+| SE | Storage Engine |
+| SE Queries | Consultas internas al motor de almacenamiento |
+| SE Cache | Porcentaje resuelto desde caché VertiPaq |
+
+---
+
+## 📈 Resumen de rendimiento SQL Server DWH
+
+| # | Prueba | Elapsed (ms) | CPU (ms) | Logical Reads |
+|---:|---|---:|---:|---:|
+| 1 | Ventas por Departamento en 2021 | 10,147 | 187 | 3,040 |
+| 2 | Ventas por Categoría en 2021 | 242 | 219 | 3,040 |
+| 3 | Ventas por Mes en 2021 | 47 | 47 | 2,258 |
+| 4 | Ventas por País de Usuario en 2021 | 54 | 186 | 4,762 |
+| 5 | Ventas por Género y Departamento en 2021 | 253 | 250 | 5,298 |
+| 6 | Ventas por Estado de Orden en 2021 | 2,366 | 188 | 2,260 |
+| 7 | Ventas por Estado de Ítem en 2021 | 260 | 265 | 2,260 |
+| 8 | Top 10 Marcas por Ventas en 2021 | 219 | 219 | 3,040 |
+| 9 | Ventas por Centro de Distribución en 2021 | 259 | 235 | 3,040 |
+| 10 | Ventas Acumuladas YTD por Mes en 2021 | 33 | 31 | 2,258 |
+| 11 | Ventas por Fuente de Tráfico del Usuario en 2021 | 53 | 76 | 4,762 |
+| 12 | Ventas por Fin de Semana vs Día Laboral en 2021 | 35 | 31 | 2,258 |
+
+> Las consultas 1 y 6 presentaron tiempos elevados por condiciones de caché frío o posible contención de I/O.
+
+---
+
+## ⚡ Resumen de rendimiento DAX Studio / SSAS Tabular
+
+| # | Prueba | Total (ms) | FE (ms) | SE (ms) | SE Queries | SE Cache |
+|---:|---|---:|---:|---:|---:|---:|
+| 1 | Ventas por Departamento en 2021 | 4 | 3 | 1 | 2 | 100% |
+| 2 | Ventas por Categoría en 2021 | 7 | 4 | 3 | 2 | 100% |
+| 3 | Ventas por Mes en 2021 | 7 | 7 | 0 | 2 | 100% |
+| 4 | Ventas por País de Usuario en 2021 | 3 | 3 | 0 | 2 | 100% |
+| 5 | Ventas por Género y Departamento en 2021 | 3 | 3 | 0 | 2 | 100% |
+| 6 | Ventas por Estado de Orden en 2021 | 12 | 1 | 11 | 2 | 0% |
+| 7 | Ventas por Estado de Ítem en 2021 | 12 | 1 | 11 | 2 | 0% |
+| 8 | Top 10 Marcas por Ventas en 2021 | 4 | 4 | 0 | 2 | 100% |
+| 9 | Ventas por Centro de Distribución en 2021 | 18 | 1 | 17 | 2 | 0% |
+| 10 | Ventas Acumuladas YTD por Mes en 2021 | 23 | 7 | 16 | 5 | 50% |
+| 11 | Ventas por Fuente de Tráfico del Usuario en 2021 | 20 | 5 | 15 | 2 | 0% |
+| 12 | Ventas por Fin de Semana vs Día Laboral en 2021 | 20 | 5 | 15 | 2 | 0% |
+
+---
+
+## 🏁 Comparación DWH vs Tabular
+
+| # | Prueba | SQL Elapsed | DAX Total | Factor aprox. |
+|---:|---|---:|---:|---:|
+| 1 | Ventas por Departamento en 2021 | 10,147 ms | 4 ms | 2537x |
+| 2 | Ventas por Categoría en 2021 | 242 ms | 7 ms | 35x |
+| 3 | Ventas por Mes en 2021 | 47 ms | 7 ms | 7x |
+| 4 | Ventas por País de Usuario en 2021 | 54 ms | 3 ms | 18x |
+| 5 | Ventas por Género y Departamento en 2021 | 253 ms | 3 ms | 84x |
+| 6 | Ventas por Estado de Orden en 2021 | 2,366 ms | 12 ms | 197x |
+| 7 | Ventas por Estado de Ítem en 2021 | 260 ms | 12 ms | 22x |
+| 8 | Top 10 Marcas por Ventas en 2021 | 219 ms | 4 ms | 55x |
+| 9 | Ventas por Centro de Distribución en 2021 | 259 ms | 18 ms | 14x |
+| 10 | Ventas Acumuladas YTD por Mes en 2021 | 33 ms | 23 ms | 1x |
+| 11 | Ventas por Fuente de Tráfico en 2021 | 53 ms | 20 ms | 3x |
+| 12 | Ventas por Fin de Semana vs Día Laboral en 2021 | 35 ms | 20 ms | 2x |
+
+> El factor de la consulta 1 usa una ejecución SQL con caché frío, por lo que representa un escenario extremo. Con caché caliente, el factor sería menor.
+
+---
+
+## 🔍 Consulta SQL de ejemplo
 
 ```sql
 USE db_dwh_thelook;
@@ -315,7 +380,9 @@ SET STATISTICS IO OFF;
 GO
 ```
 
-### Consulta equivalente en DAX Studio
+---
+
+## 🔍 Consulta DAX equivalente
 
 ```DAX
 EVALUATE
@@ -336,28 +403,14 @@ ORDER BY
 
 ---
 
-## 📈 Resultado de rendimiento observado
+## 🧠 Observaciones técnicas
 
-Ejemplo de prueba realizada:
-
-| Motor | Tiempo aproximado | Detalle |
-|---|---:|---|
-| SQL Server DWH | 246 ms | Consulta SQL con JOIN y GROUP BY |
-| SSAS Tabular / DAX Studio | 10 ms | Consulta DAX con Server Timings |
-
-En DAX Studio se observaron métricas como:
-
-```text
-Total: 10 ms
-Formula Engine: 7 ms
-Storage Engine: 3 ms
-SE Queries: 2
-SE Cache: 100%
-```
-
-Conclusión:
-
-> Para la consulta analítica de ventas por departamento en 2021, el modelo SSAS Tabular respondió más rápido que la consulta SQL directa al Datamart, aprovechando almacenamiento columnar en memoria, compresión y caché del motor tabular.
+- Las consultas SQL con `fact_sales` realizaron aproximadamente **2,246 lecturas lógicas** sobre la tabla de hechos en la mayoría de pruebas.
+- Las consultas con `dim_user` incrementaron las lecturas lógicas hasta **4,762** por la mayor cardinalidad de la dimensión.
+- El modelo SSAS Tabular resolvió la mayoría de consultas en menos de **23 ms**.
+- Las consultas con **SE Cache = 100%** fueron resueltas desde caché VertiPaq.
+- La consulta YTD fue la más compleja en DAX, con **5 SE Queries**, debido a la lógica temporal.
+- El modelo tabular mostró una ventaja clara en escenarios analíticos repetitivos.
 
 ---
 
@@ -369,107 +422,65 @@ BI_CUBO_OLAP_TABULAR/
 ├── fact_sales_cubo/
 │   └── Proyecto SSAS Tabular
 │
-├── fact_sales_cubo.sln
+├── SQL/
+│   ├── scripts_transaccional.sql
+│   ├── scripts_dwh.sql
+│   ├── etl_dwh.sql
+│   └── consultas_rendimiento.sql
+│
+├── DAX/
+│   ├── medidas_dax.md
+│   ├── consultas_dax_studio.dax
+│   └── kpis_dax.md
+│
+├── docs/
+│   ├── modelo_dwh.png
+│   ├── modelo_tabular.png
+│   ├── evidencia_dax_studio.png
+│   └── evidencia_powerbi_service.png
+│
 ├── README.md
 ├── LICENSE.txt
 ├── .gitignore
 └── .gitattributes
 ```
 
-Estructura recomendada adicional:
-
-```text
-BI_CUBO_OLAP_TABULAR/
-│
-├── SQL/
-│   ├── 01_create_db_transaccional.sql
-│   ├── 02_bulk_insert_transaccional.sql
-│   ├── 03_create_dwh_dimensional.sql
-│   ├── 04_etl_transaccional_to_dwh.sql
-│   └── 05_consultas_rendimiento.sql
-│
-├── DAX/
-│   ├── medidas_dax.md
-│   └── consultas_dax_studio.dax
-│
-├── PowerBI/
-│   └── dashboard_thelook.pbix
-│
-├── docs/
-│   ├── modelo_transaccional.png
-│   ├── modelo_dwh.png
-│   ├── modelo_tabular.png
-│   └── evidencia_rendimiento.png
-```
-
 ---
 
-## ⚙️ Herramientas utilizadas
+## 🛠️ Herramientas utilizadas
 
-```text
-SQL Server 2025 Developer
-SQL Server Management Studio
-SQL Server Analysis Services Tabular
-Visual Studio / SSDT
-DAX Studio
-Power BI Desktop
-Power BI Service
-On-premises Data Gateway
-GitHub
-```
+| Herramienta | Uso |
+|---|---|
+| SQL Server 2025 Developer | Motor relacional y DWH |
+| SQL Server Management Studio | Administración y consultas SQL |
+| SQL Server Analysis Services Tabular | Modelo semántico tabular |
+| Visual Studio / SSDT | Desarrollo del modelo tabular |
+| DAX Studio | Medición y análisis de consultas DAX |
+| Power BI Desktop | Diseño del dashboard |
+| Power BI Service | Publicación del reporte |
+| On-premises Data Gateway | Conexión cloud-local |
+| GitHub | Control de versiones |
 
 ---
 
 ## 🌐 Power BI Service y Gateway
 
-Para conectar Power BI Service con el modelo SSAS Tabular local, se configuró:
+Para conectar Power BI Service con el modelo local SSAS Tabular se configuró:
 
 ```text
-On-premises Data Gateway
+Gateway: Gateway_NIK_RAMIREZ
+Servidor Analysis Services: NIK-RAMIREZ-BAU\TABULAR
+Base tabular: fact_sales_cubo
 ```
-
-Gateway utilizado:
-
-```text
-Gateway_NIK_RAMIREZ
-```
-
-Servidor Analysis Services:
-
-```text
-NIK-RAMIREZ-BAU\TABULAR
-```
-
-Base tabular:
-
-```text
-fact_sales_cubo
-```
-
----
-
-## 📌 Evidencias esperadas
-
-Para documentar el proyecto se recomienda incluir capturas de:
-
-- Modelo transaccional en SQL Server.
-- Modelo DWH dimensional.
-- Proyecto SSAS Tabular en Visual Studio.
-- Medidas DAX creadas.
-- KPIs configurados.
-- DAX Studio con Server Timings.
-- Dashboard en Power BI Desktop.
-- Publicación en Power BI Service.
-- Gateway en estado Online.
 
 ---
 
 ## 🚀 Cómo ejecutar el proyecto
 
-1. Restaurar o crear la base transaccional `db_transc_thelook`.
-2. Cargar los CSV transformados con `BULK INSERT`.
-3. Crear la base DWH `db_dwh_thelook`.
-4. Ejecutar el ETL desde transaccional hacia DWH.
+1. Crear o restaurar la base transaccional `db_transc_thelook`.
+2. Cargar los datos transformados con `BULK INSERT`.
+3. Crear la base dimensional `db_dwh_thelook`.
+4. Ejecutar el ETL desde la base transaccional al DWH.
 5. Abrir el proyecto tabular en Visual Studio.
 6. Configurar el servidor de despliegue:
 
@@ -478,31 +489,42 @@ NIK-RAMIREZ-BAU\TABULAR
 ```
 
 7. Implementar y procesar el modelo tabular.
-8. Validar medidas en DAX Studio.
-9. Conectar Power BI Desktop en modo Live Connection.
-10. Publicar el dashboard en Power BI Service.
-11. Configurar On-premises Data Gateway.
+8. Ejecutar medidas y consultas en DAX Studio.
+9. Activar `Server Timings` y `Query Plan`.
+10. Conectar Power BI Desktop en modo Live Connection.
+11. Publicar el reporte en Power BI Service.
+12. Configurar el On-premises Data Gateway.
+
+---
+
+## ✅ Conclusiones
+
+1. El modelo SSAS Tabular presentó mejores tiempos de respuesta que las consultas SQL directas al DWH para la mayoría de pruebas analíticas.
+2. El motor VertiPaq permitió resolver consultas en memoria, reduciendo el acceso a disco.
+3. La caché del Storage Engine permitió tiempos entre **3 ms y 7 ms** en consultas repetidas.
+4. Las consultas SQL con caché frío presentaron tiempos elevados, especialmente en las consultas 1 y 6.
+5. El uso de DAX Studio permitió evidenciar el comportamiento del Formula Engine, Storage Engine y SE Cache.
+6. La solución BI permite analizar ventas, margen, órdenes y crecimiento temporal mediante KPIs y medidas DAX avanzadas.
 
 ---
 
 ## 📚 Objetivo académico
 
-Este proyecto demuestra la construcción de una solución BI completa, integrando:
+Este proyecto demuestra la construcción de una solución BI integral que combina:
 
 - Modelado transaccional.
 - Modelado dimensional.
-- Procesos ETL.
-- Modelos semánticos tabulares.
-- Medidas DAX avanzadas.
+- ETL.
+- Modelo SSAS Tabular.
+- DAX avanzado.
 - KPIs.
-- Análisis de rendimiento.
-- Visualización y publicación en Power BI Service.
+- DAX Studio.
+- Comparación de rendimiento.
+- Power BI Service.
 
 ---
 
 ## 👤 Autor
-
-Proyecto desarrollado por:
 
 ```text
 Nik-920
