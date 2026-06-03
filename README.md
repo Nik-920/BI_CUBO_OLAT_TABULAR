@@ -17,7 +17,7 @@
 
 ## 📌 Resumen ejecutivo
 
-Este repositorio contiene una solución de **Inteligencia de Negocios** construida sobre el dataset **TheLook Ecommerce**. El proyecto integra una base transaccional normalizada, un **Data Warehouse dimensional tipo constelación**, un modelo **SSAS Tabular**, medidas **DAX avanzadas**, KPIs de negocio, análisis de rendimiento con **DAX Studio** y publicación en **Power BI Service** mediante **On-premises Data Gateway**.
+Este repositorio contiene una solución de **Inteligencia de Negocios - BI** construida sobre el dataset **TheLook Ecommerce**. El proyecto integra una base transaccional normalizada, un **Data Warehouse dimensional tipo constelación**, un modelo **SSAS Tabular**, medidas **DAX avanzadas**, KPIs de negocio, análisis de rendimiento con **DAX Studio** y publicación en **Power BI Service** mediante **On-premises Data Gateway**.
 
 El propósito principal es comparar el rendimiento entre:
 
